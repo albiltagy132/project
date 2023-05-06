@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Add Session</title>
+</head>
+<body>
+    <div id="main-content">
+    <div class="box sessionAdd-box">
+        <h1 class="stitle homeTitle">Create A Session</h1>
+        <div class="form-group line">
+            <label class="sameline" for="session-name">Session&nbspName:</label>
+            <input type="text" id="session-name" name="session-name" required>
+        </div>
+        <div class="form-group line">
+            <label class="sameline"  for="papers">Papers:</label>
+            <select id="session-papers" name="papers" required>
+            </select>
+          </div>
+        <div class="line form-group" id="location">
+            <label class="sameline" for="session-location">Session&nbspLocation:</label>
+            <select id="session-location" name="session-location" required>
+            </select>
+        </div>
+        <div class="line form-group" id="date">
+            <label class="sameline" for="session-date">Session&nbspDate:</label>
+            <select id="session-date" name="session-date" required>
+            </select>
+        </div>
+        <div id="time">
+            <label  for="session-time">Session Time:</label>
+            <input type="time" id="session-time" name="session-time" required>
+        </div>
+        <input type="submit" class="addSBtn" id="add-session-btn" value="Add Session">
+    </div>
+</div>
+<script src="/js/script.js"></script>
+</body>
+</html>

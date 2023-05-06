@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Submission Form</title>
+	<style>
+    body {
+	font-family: Arial, sans-serif;
+}
+
+h1 {
+	text-align: center;
+}
+
+label {
+	display: block;
+	margin-top: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+	width: 100%;
+	padding: 5px;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+input[type="checkbox"] {
+	margin-left: 10px;
+}
+
+#authors {
+	margin-bottom: 10px;
+}
+
+.author {
+	border: 1px solid #ccc;
+	padding: 10px;
+	margin-bottom: 10px;
+	border-radius: 4px;
+}
+
+.author:last-child {
+	margin-bottom: 0;
+}
+
+button {
+	margin-top: 10px;
+	background-color: #4CAF50;
+	color: white;
+	padding: 10px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+button[type="submit"] {
+	background-color: #008CBA;
+}
+
+button[type="reset"] {
+	background-color: #f44336;
+}
+
+
+  </style>
+</head>
+<body>
+	<h1>Submission Form</h1>
+	<form id="submission-form">
+		<label for="paper-title">Paper Title:</label>
+		<input type="text" id="paper-title" name="paper-title" required>
+		
+		<label for="abstract">Abstract:</label>
+		<textarea id="abstract" name="abstract" required></textarea>
+		
+		<label for="authors">Authors:</label>
+		<div id="authors">
+			<div class="author">
+				<label for="author1-name">Name:</label>
+				<input type="text" id="author1-name" name="author1-name" required>
+				
+				<label for="author1-email">Email:</label>
+				<input type="email" id="author1-email" name="author1-email" required>
+				
+				<label for="author1-affiliation">Affiliation:</label>
+				<input type="text" id="author1-affiliation" name="author1-affiliation" required>
+				
+				<label for="author1-presenter">Presenter:</label>
+				<input type="checkbox" id="author1-presenter" name="author1-presenter">
+			</div>
+			<div class="author">
+				<label for="author2-name">Name:</label>
+				<input type="text" id="author2-name" name="author2-name" required>
+				
+				<label for="author2-email">Email:</label>
+				<input type="email" id="author2-email" name="author2-email" required>
+				
+				<label for="author2-affiliation">Affiliation:</label>
+				<input type="text" id="author2-affiliation" name="author2-affiliation" required>
+				
+				<label for="author2-presenter">Presenter:</label>
+				<input type="checkbox" id="author2-presenter" name="author2-presenter">
+			</div>
+		</div>
+		
+		<label for="pdf-file">PDF File:</label>
+		<input type="file" id="pdf-file" name="pdf-file" accept=".pdf" required>
+		
+		<button type="submit">Submit</button>
+		<button type="reset">Reset</button>
+	</form>
+	
+	<script src="/submit.js"></script>
+</body>
+</html>

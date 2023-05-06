@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login Page</title>
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+	<div class="login-box box">
+		<h2 class="homeTitle">Login</h2>
+		<div id="error"></div>
+		<form class="logform">
+			<div class="line">
+			<label for="username">Email</label>
+			<input type="text" class="usrpass" id="username" name="username" value="johndoe@organizer.com" required>
+			</div>
+			<div class="line">
+			<label for="password">Password</label>
+			<input type="password" class="usrpass" id="password" name="password" value="password123" required>
+			</div>
+			<button type="button" class="logbtn" onclick="login()">Login</button>
+		</form>
+	</div>
+	<script src="/js/script.js"></script>
+</body>
+</html>
+

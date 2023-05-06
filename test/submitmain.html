@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Submission Form</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+	<div class="sessionAdd-box box">
+		<h1>Submission Form</h1>
+		<form>
+			<label for="title">Paper Title:</label>
+			<input type="text" id="title" name="title" required>
+
+			<label for="abstract">Abstract:</label>
+			<textarea id="abstract" name="abstract" required></textarea>
+
+			<label for="authors">Authors:</label>
+			<div id="authors">
+				<div class="author">
+					<input type="text" name="name[]" placeholder="Name" required>
+					<input type="email" name="email[]" placeholder="Email" required>
+					<input type="text" name="affiliation[]" placeholder="Affiliation" required>
+					<label>
+					  Presenter:
+					  <input type="checkbox" name="presenter[]" value="yes">
+					</label>
+				  </div>
+			</div>
+			<button  class="subres" id="add-author" type="button">Add Author</button>
+			<br>
+			<label for="pdf">PDF File:</label>
+			<input type="file" id="pdf" name="pdf" required>
+      		<br>
+			<div class="sub_res">
+				<button class="subres" type="submit"  id="sub_bttn">Submit</button>
+				<button class="subres" type="reset">Reset</button>
+			</div>
+		</form>
+	</div>
+
+	
+
+  <script src="js/script.js"></script>
+</body>
+</html>

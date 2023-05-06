@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Conference Schedule</title>
+  <style>
+    
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #0077bb;
+  color: #fff;
+  padding: 1em;
+}
+
+header h1 {
+  margin: 0;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+nav li:last-child {
+  margin-right: 0;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+main {
+  max-width: 800px;
+  margin: 2em auto;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-top: 2em;
+}
+
+form div {
+  margin-bottom: 1em;
+}
+
+label {
+  display: inline-block;
+  width: 150px;
+}
+
+input[type="text"],
+select,
+input[type="date"],
+input[type="time"] {
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1em;
+}
+
+button[type="submit"] {
+  background-color: #0077bb;
+  color: #fff;
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 3px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+#error-message {
+  color: red;
+}
+
+</style>
+  
+</head>
+<body>
+  <h1>Conference Schedule</h1>
+  <form>
+    <h2>Create Session</h2>
+    <label for="session-name">Session Name:</label>
+    <input type="text" id="session-name" required>
+    <br>
+    <label for="session-date">Date:</label>
+    <input type="date" id="session-date" required>
+    <br>
+    <label for="session-time">Time:</label>
+    <input type="time" id="session-time" required>
+    <br>
+    <label for="session-location">Location:</label>
+    <input type="text" id="session-location" required>
+    <br>
+    <label for="accepted-papers">Accepted Papers:</label>
+    <select multiple id="accepted-papers">
+      <!-- options will be added dynamically by JavaScript code -->
+    </select>
+    <br>
+    <label for="presenters">Presenters:</label>
+    <input type="text" id="presenters" required>
+    <br>
+    <button type="submit" id="create-session-button">Create Session</button>
+  </form>
+  <hr>
+  <h2>Sessions</h2>
+  <ul id="sessions-list">
+    <!-- list items will be added dynamically by JavaScript code -->
+  </ul>
+  <hr>
+  <h2>Filter Schedule by Date</h2>
+  <form>
+    <label for="filter-date">Select Date:</label>
+    <input type="date" id="filter-date" required>
+    <br>
+    <button type="submit" id="filter-button">Filter</button>
+  </form>
+  <h3>Filtered Sessions</h3>
+  <ul id="filtered-sessions-list">
+    <!-- list items will be added dynamically by JavaScript code -->
+  </ul>
+  <script src="/conference-shedule.js"></script>
+</body>
+</html>

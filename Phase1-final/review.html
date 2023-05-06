@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Reviewer Form</title>
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="sessionAdd-box box">
+  <h1>Reviewer Form</h1>
+  <div>
+    <label for="paper-list">Select Paper:</label>
+    <select id="paper-list">
+      <option value="">--Select a paper--</option>
+    </select>
+  </div>
+  <div>
+    <h2>Overall Evaluation</h2>
+    <div>
+      <label for="overall-evaluation">Overall Evaluation:</label>
+      <select id="overall-evaluation">
+        <option value="">--Select an option--</option>
+        <option value="2">Strong Accept</option>
+        <option value="1">Accept</option>
+        <option value="0">Borderline</option>
+        <option value="-1">Reject</option>
+        <option value="-2">Strong Reject</option>
+      </select>
+    </div>
+    <div>
+      <label for="paper-contribution">Paper Contribution:</label>
+      <select id="paper-contribution">
+        <option value="">--Select an option--</option>
+        <option value="4">A Major and Significant Contribution</option>
+        <option value="3">A Clear Contribution</option>
+        <option value="2">Minor Contribution</option>
+        <option value="1">No Obvious Contribution</option>
+      </select>
+    </div>
+    <div>
+      <label for="paper-strengths">Paper Strengths:</label>
+      <textarea id="paper-strengths"></textarea>
+    </div>
+    <div>
+      <label for="paper-weaknesses">Paper Weaknesses:</label>
+      <textarea id="paper-weaknesses"></textarea>
+    </div>
+    <div class="sub_res">
+    <button class="subres" id="submit-btn">Submit</button>
+    <button class="subres" type="reset">Reset</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+<!-- <script>
+      const submitBtn = document.getElementById("submit-btn");
+
+submitBtn.addEventListener("click", () => {
+  const paperId = document.getElementById("paper-list").value;
+  const evalOverall = document.getElementById("overall-evaluation").value;
+  const evalContribution = document.getElementById("paper-contribution").value;
+  const evalStrengths = document.getElementById("paper-strengths").value;
+  const evalWeaknesses = document.getElementById("paper-weaknesses").value;
+
+  if (!paperId || !evalOverall || !evalContribution || !evalStrengths || !evalWeaknesses) {
+    alert("Please fill out all fields.");
+    return;
+  }
+
+  // Retrieve papers from local storage
+  let papers = JSON.parse(localStorage.getItem("papers"));
+  if (!papers) {
+    papers = [];
+  }
+
+  // Find the paper in the list and update its evaluation
+  for (let i = 0; i < papers.length; i++) {
+    if (papers[i].id === paperId) {
+      papers[i].evaluation = {
+        overall: evalOverall,
+        contribution: evalContribution,
+        strengths: evalStrengths,
+        weaknesses: evalWeaknesses
+      };
+      break;
+    }
+  }
+
+  // Save the updated list of papers to local storage
+  localStorage.setItem("papers", JSON.stringify(papers));
+
+  alert("Evaluation saved successfully.");
+});
+</script> -->

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Submission Form</title>
+	<style>
+    .container {
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 20px;
+	border: 1px solid #ccc;
+}
+
+label {
+	display: block;
+	margin-top: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+	width: 100%;
+	padding: 5px;
+	margin-top: 5px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+textarea {
+	height: 150px;
+}
+
+button {
+	margin-top: 10px;
+	padding: 10px 20px;
+	background-color: #4CAF50;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #3e8e41;
+}
+
+input[type="submit"] {
+	margin-top: 20px;
+	background-color: #4CAF50;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+input[type="submit"]:hover {
+	background-color: #3e8e41;
+}
+
+  </style>
+</head>
+<body>
+	<div class="container">
+		<h1>Submission Form</h1>
+		<form action="" method="post" enctype="multipart/form-data">
+			<label for="title">Paper Title:</label>
+			<input type="text" id="title" name="title" required>
+
+			<label for="abstract">Abstract:</label>
+			<textarea id="abstract" name="abstract" required></textarea>
+
+			<label for="authors">Authors:</label>
+			<div id="authors">
+				<div class="author">
+					<input type="text" name="name[]" placeholder="Name" required>
+					<input type="email" name="email[]" placeholder="Email" required>
+					<input type="text" name="affiliation[]" placeholder="Affiliation" required>
+					<label for="presenter">Presenter:</label>
+					<input type="checkbox" name="presenter[]" value="yes">
+				</div>
+			</div>
+			<button id="add-author" type="button">Add Author</button>
+
+			<label for="pdf">PDF File:</label>
+			<input type="file" id="pdf" name="pdf" required>
+
+			<input type="submit" value="Submit">
+		</form>
+	</div>
+	<script>
+    const addAuthorBtn = document.getElementById("add-author");
+const authorsDiv = document.getElementById("authors");
+
+addAuthorBtn.addEventListener("click", () => {
+  const authorDiv = document.createElement("div");
+  authorDiv.classList.add("author");
+
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.name = "name[]";
+  nameInput.placeholder = "Name";
+  nameInput.required = true;
+
+  const emailInput = document.createElement("input");
+  emailInput.type = "email";
+  emailInput.name = "email[]";
+  emailInput.placeholder = "Email";
+  emailInput.required = true;
+
+  const affiliationInput = document.createElement("input");
+  affiliationInput.type = "text";
+  affiliationInput.name = "affiliation[]";
+  affiliationInput.placeholder = "Affiliation";
+  affiliationInput.required = true;
+
+  const presenterLabel = document.createElement("label");
+  presenterLabel.textContent = "Presenter: ";
+
+  const presenterInput = document.createElement("input");
+  presenterInput.type = "checkbox";
+  presenterInput.name = "presenter[]";
+  presenterInput.value = "yes";
+
+  presenterLabel.appendChild(presenterInput);
+
+  authorDiv.appendChild(nameInput);
+  authorDiv.appendChild(emailInput);
+  authorDiv.appendChild(affiliationInput);
+  authorDiv.appendChild(presenterLabel);
+
+  authorsDiv.appendChild(authorDiv);
+});
+
+const submitBtn = document.querySelector("input[type=submit]");
+submitBtn.addEventListener("click", () => {
+  const fileInput = document.getElementById("pdf");
+
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const pdfData = event.target.result;
+      localStorage.setItem("pdf", pdfData);
+    };
+
+    reader.readAsDataURL(file);
+  }
+});
+
+const downloadBtn = document.getElementById("download");
+downloadBtn.addEventListener("click", () => {
+  const pdfData = localStorage.getItem("pdf");
+  const pdfBlob = dataURLtoBlob(pdfData);
+  const pdfUrl = URL.createObjectURL(pdfBlob);
+  const a = document.createElement("a");
+  a.href = pdfUrl;
+  a.download = "paper.pdf";
+  document.body.appendChild(a);
+  a.click();
+});
+
+function dataURLtoBlob(dataURL) {
+  const byteString = atob(dataURL.split(",")[1]);
+  const mimeString = dataURL.split(",")[0].split(":")[1].split(";")[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: mimeString });
+}
+
+  </script>
+</body>
+</html>
