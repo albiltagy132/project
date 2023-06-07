@@ -1,0 +1,39 @@
+// schema.prisma
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+}
+
+
+
+model Paper {
+  id      Int     @id @default(autoincrement())
+  pdf     String
+  author  String
+  abstract String
+  title   String
+}
+
+
+
+model ReviewerForm {
+  id                  Int     @id @default(autoincrement())
+  paper_weaknesses    String
+  paper_strengths     String
+  paper_contribution  String
+  evaluation          String
+  paper_id            Int
+}
+
+
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  name      String
+  paper_id  String
+  time      DateTime
+  date      DateTime
+}
+
