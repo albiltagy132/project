@@ -29,14 +29,14 @@ export function Navbar() {
 					</Link>
 					{open ? <i className="fa fa-times mobile-icon" onClick={() => setOpen(false)} /> : <i className="fa fa-bars mobile-icon" onClick={() => setOpen(true)} />}
 				</div>
+			<div style={{ display: "flex", alignItems: "center" }}>
 				{user?.id && (
-					<div style={{ display: "flex", alignItems: "center" }}>
 						<h4>
 							{user?.fName} {user?.lName} ( {user?.role} )
 						</h4>
-						{open ? <i className="fa fa-times desktop-icon" onClick={() => setOpen(false)} /> : <i className="fa fa-bars desktop-icon" onClick={() => setOpen(true)} />}
-					</div>
 				)}
+				{open ? <i className="fa fa-times desktop-icon" onClick={() => setOpen(false)} /> : <i className="fa fa-bars desktop-icon" onClick={() => setOpen(true)} />}
+			</div>
 			</div>
 			{open && (
 				<ul className="main-nav">
