@@ -1,0 +1,17 @@
+[
+	{
+		"name": "Female Engineering Building",
+		"building_code": "C07",
+		"room": "145"
+	},
+	{
+		"name": "CSE Meeting Room",
+		"building_code": "BCR",
+		"room": "E104"
+	},
+	{
+		"name": "QU Library",
+		"building_code": "B13",
+		"room": "201"
+	}
+]
