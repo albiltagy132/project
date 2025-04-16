@@ -93,7 +93,7 @@ export function DriverTable() {
               <tr key={driver.driver_id} className="text-center border border-gray-200">
                 <td className="p-2 text-center">
                   <div className="flex justify-center">
-                    <Image src={driver.image_url} alt="Driver" className="w-20 h-20 rounded-lg border border-gray-300 shadow-md object-cover" />
+                    <Image src={driver.image_url} alt="Driver" width={80} height={80} className="rounded-lg border border-gray-300 shadow-md object-cover" />
                   </div>
                 </td>
                 <td className="p-2">{driver.first_name}</td>
