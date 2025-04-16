@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const drivers = await prisma.driver.findMany();
     return NextResponse.json(drivers);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch drivers" }, { status: 500 });
   }
 }
