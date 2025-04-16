@@ -149,7 +149,7 @@ export function Assign() {
             <th className="border border-gray-300 p-2">Shift</th>
             <th className="border border-gray-300 p-2">Day</th>
             <th className="border border-gray-300 p-2">Assigned At</th>
-            <th className="border border-gray-300 p-2">Actions</th>
+            {/*<th className="border border-gray-300 p-2">Actions</th>*/}
           </tr>
         </thead>
         <tbody>
@@ -164,12 +164,12 @@ export function Assign() {
               <td className="p-2">{a.weekday}</td>
               <td className="p-2">{new Date(a.assigned_at).toLocaleString()}</td>
               <td className="p-2">
-                <button
+                {/* <button
                   onClick={() => handleUnassign(a.assignment_id)}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
                   Unassign
-                </button>
+                </button> */}
               </td>
             </tr>
           ))}
