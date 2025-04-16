@@ -77,12 +77,12 @@ export function Assign() {
   }
   
 
-  async function handleUnassign(assignment_id: number) {
-    if (!confirm("Are you sure you want to unassign this driver?")) return;
+  // async function handleUnassign(assignment_id: number) {
+  //   if (!confirm("Are you sure you want to unassign this driver?")) return;
 
-    await fetch(`/api/assignments/${assignment_id}`, { method: "DELETE" });
-    setAssignments(assignments.filter((a) => a.assignment_id !== assignment_id));
-  }
+  //   await fetch(`/api/assignments/${assignment_id}`, { method: "DELETE" });
+  //   setAssignments(assignments.filter((a) => a.assignment_id !== assignment_id));
+  // }
 
   // Filter Assignments Based on Search Query
   const filteredAssignments = assignments.filter((a) =>
