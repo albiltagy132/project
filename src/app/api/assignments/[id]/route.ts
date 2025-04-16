@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import type { NextRequest } from "next/server";
-import type { NextApiRequest } from "next"; // optional fallback
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const assignment_id = parseInt(context.params.id);
+    const assignment_id = parseInt(params.id);
 
     await prisma.assignment.delete({
       where: { assignment_id },
