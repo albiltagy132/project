@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-
 export async function DELETE(
   req: Request,
-  context: { params: Record<string, string> }  // THIS is the compatible type!
+  { params }: { params: { id: string } } 
 ) {
   try {
-    const assignment_id = parseInt(context.params.id);
+    const assignment_id = parseInt(params.id);
 
     await prisma.assignment.delete({
       where: { assignment_id },
