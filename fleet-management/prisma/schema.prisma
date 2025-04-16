@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+//Drivers Table
+model Driver {
+  driver_id     Int      @id @default(autoincrement())
+  first_name    String   
+  last_name     String   
+  id_number     String   @unique
+  phone_number  String   
+  email         String   @unique
+  image_url     String?  //Store image path
+  created_at    DateTime @default(now())
+
+  //Relationships
+  assignments    Assignment[]
+  trips          Trip[]
+}
+
+//Vehicles Table
+model Vehicle {
+  vehicle_id     Int      @id @default(autoincrement())
+  vehicle_number String   @unique
+  device_id      String   @unique
+  model          String   
+  make           String   
+  year           Int
+  status         Status
+  created_at     DateTime @default(now())
+
+  //Relationships
+  assignments    Assignment[]
+  trips          Trip[]
+}
+
+//Assignments Table (Links Drivers & Vehicles)
+model Assignment {
+  assignment_id  Int      @id @default(autoincrement())
+  driver_id      Int
+  vehicle_id     Int
+  shift          Shift @default(MORNING)
+  weekday        WeekDay
+  assigned_at    DateTime @default(now())
+  status         AssignmentStatus @default(ACTIVE)
+
+  driver   Driver @relation(fields: [driver_id], references: [driver_id])
+  vehicle  Vehicle @relation(fields: [vehicle_id], references: [vehicle_id])
+
+  @@unique([vehicle_id, weekday, shift])        // One vehicle per shift/day
+  @@unique([driver_id, weekday, shift])         // One driver per shift/day
+}
+
+
+
+//Trips Table
+model Trip {
+  trip_id                   Int       @id @default(autoincrement())
+  driver_id                 Int
+  vehicle_id                Int
+  start_time                DateTime
+  end_time                  DateTime?
+  trip_status               TripStatus
+  shift                     Shift     @default(MORNING)  // ✅ add default here
+  total_drowsy_events       Int       @default(0)
+  total_distraction_events  Int       @default(0)
+  created_at                DateTime  @default(now())
+
+  driver   Driver @relation(fields: [driver_id], references: [driver_id])
+  vehicle  Vehicle @relation(fields: [vehicle_id], references: [vehicle_id])
+  events   Event[]
+}
+
+
+
+//Events Table (Fatigue Detection)
+model Event {
+  event_id    Int      @id @default(autoincrement())
+  trip_id     Int
+  event_time  DateTime
+  event_type  EventType
+  image_proof String   
+  created_at  DateTime @default(now())
+
+  // Relationships
+  trip   Trip @relation(fields: [trip_id], references: [trip_id])
+}
+
+//ENUMS
+enum Status {
+  Active
+  Maintenance
+  Inactive
+}
+
+enum AssignmentStatus {
+  ACTIVE
+  COMPLETED
+}
+
+enum TripStatus {
+  Completed
+  Failed
+  InProgress
+}
+
+enum EventType {
+  Drowsy
+  Distracted
+}
+
+enum Shift {
+  MORNING
+  NIGHT
+}
+
+enum WeekDay {
+  Sunday
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+}
