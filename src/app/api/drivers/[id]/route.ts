@@ -2,14 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import fs from "fs/promises";
 
-type DriverUpdateInput = {
-  first_name: string | null;
-  last_name: string | null;
-  id_number: string | null;
-  phone_number: string | null;
-  email: string | null;
-  image_url?: string;
-};
+
 
 // GET - Fetch a Single Driver by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {
@@ -37,12 +30,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   try {
     const driver_id = parseInt(params.id);
     const formData = await req.formData();
-    const updatedData: { [key: string]: any } = {};
+    const updatedData: { [key: string]: string } = {};
 
     const fields = ["first_name", "last_name", "id_number", "phone_number", "email"];
     fields.forEach((field) => {
       const value = formData.get(field);
-      if (value) updatedData[field] = value;
+      if (typeof value === "string") {
+        updatedData[field] = value;
+      }
     });
 
     const image = formData.get("image") as File;
