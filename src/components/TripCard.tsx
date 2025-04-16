@@ -1,6 +1,7 @@
-// src/components/TripCard.tsx
 "use client";
 import { useState } from "react";
+import Image from "next/image";
+
 
 interface Event {
   event_id: number;
@@ -35,11 +36,7 @@ export function TripCard({
     <div className="border rounded-md p-4 bg-white shadow">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <img
-            src={driver_image}
-            alt="Driver"
-            className="w-20 h-20 rounded-full border object-cover"
-          />
+          <Image src={driver_image} alt="Driver" className="w-20 h-20 rounded-full border object-cover"/>
           <div>
             <p className="font-semibold text-lg">{driver_name}</p>
             <p className="text-sm text-gray-600">ID: {driver_id}</p>
@@ -77,11 +74,7 @@ export function TripCard({
                 key={event.event_id}
                 className="flex items-center space-x-4 border p-2 rounded-md bg-gray-50"
               >
-                <img
-                  src={event.image_proof}
-                  alt="Event"
-                  className="w-16 h-16 object-cover border rounded"
-                />
+                <Image src={event.image_proof} alt="Event" className="w-16 h-16 object-cover border rounded" />
                 <div>
                   <p className="text-sm">
                     <strong>Type:</strong> {event.event_type}

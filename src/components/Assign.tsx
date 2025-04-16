@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
+
 
 interface Driver {
   driver_id: number;
@@ -154,7 +156,7 @@ export function Assign() {
           {filteredAssignments.map((a) => (
             <tr key={a.assignment_id} className="text-center border border-gray-200">
               <td className="p-2 flex items-center space-x-3">
-                <img src={a.driver.image_url} alt="Driver" className="w-20 h-20 border border-gray-300 shadow-md object-cover" />
+                <Image src={a.driver.image_url} alt="Driver" className="w-20 h-20 border border-gray-300 shadow-md object-cover" />
                 <span>{a.driver.first_name} {a.driver.last_name}</span>
               </td>
               <td className="p-2">{a.vehicle.vehicle_number} - {a.vehicle.model}</td>
