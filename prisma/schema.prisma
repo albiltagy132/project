@@ -78,18 +78,20 @@ model Trip {
 
 
 
-//Events Table (Fatigue Detection)
+//Events Table 
 model Event {
-  event_id    Int      @id @default(autoincrement())
-  trip_id     Int
-  event_time  DateTime
-  event_type  EventType
-  image_proof String   
-  created_at  DateTime @default(now())
+  event_id     Int        @id @default(autoincrement())
+  trip_id      Int
+  event_time   DateTime
+  event_type   EventType
+  sensor       SensorType //new field
+  image_proof  String
+  created_at   DateTime   @default(now())
 
   // Relationships
-  trip   Trip @relation(fields: [trip_id], references: [trip_id])
+  trip         Trip       @relation(fields: [trip_id], references: [trip_id])
 }
+
 
 //ENUMS
 enum Status {
@@ -105,13 +107,19 @@ enum AssignmentStatus {
 
 enum TripStatus {
   Completed
-  Failed
   InProgress
 }
 
 enum EventType {
-  Drowsy
-  Distracted
+  Sleep
+  Yawn
+}
+
+//Enum for Sensor Status
+enum SensorType {
+  Deviation
+  Brake
+  Null
 }
 
 enum Shift {

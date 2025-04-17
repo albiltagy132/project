@@ -4,7 +4,8 @@ import prisma from "@/lib/prisma";
 
 export async function DELETE(req: Request, context: any) {
   try {
-    const assignment_id = parseInt(context.params.id);
+    const { id } = await context.params;
+    const assignment_id = parseInt(id);
 
     await prisma.assignment.delete({
       where: { assignment_id },
