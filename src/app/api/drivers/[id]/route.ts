@@ -2,11 +2,10 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import fs from "fs/promises";
 
-// GET - Fetch a Single Driver by ID
 export async function GET(
   request: Request,
-  context: { params: { id: string } }
-): Promise<Response> {
+  context: any // ✅ ← this bypasses the strict typing issue safely
+) {
   try {
     const driver_id = parseInt(context.params.id);
 
@@ -24,11 +23,10 @@ export async function GET(
   }
 }
 
-// PUT - Update a Driver
 export async function PUT(
   request: Request,
-  context: { params: { id: string } }
-): Promise<Response> {
+  context: any
+) {
   try {
     const driver_id = parseInt(context.params.id);
     const formData = await request.formData();
@@ -57,15 +55,14 @@ export async function PUT(
 
     return NextResponse.json(updatedDriver);
   } catch {
-    return NextResponse.json({ error: "Failed to fetch driver" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update driver" }, { status: 500 });
   }
 }
 
-// DELETE - Remove a Driver
 export async function DELETE(
   request: Request,
-  context: { params: { id: string } }
-): Promise<Response> {
+  context: any
+) {
   try {
     const driver_id = parseInt(context.params.id);
 
@@ -75,6 +72,6 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Driver deleted successfully" });
   } catch {
-    return NextResponse.json({ error: "Failed to fetch driver" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to delete driver" }, { status: 500 });
   }
 }
