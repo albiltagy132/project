@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import fs from "fs/promises";
 
-
-
 // GET - Fetch a Single Driver by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  request: Request,
+  context: { params: { id: string } }
+): Promise<Response> {
   try {
-    const driver_id = parseInt(params.id);
-    console.log("Fetching Driver ID:", driver_id);
+    const driver_id = parseInt(context.params.id);
 
     const driver = await prisma.driver.findUnique({
       where: { driver_id },
@@ -20,18 +20,20 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
     return NextResponse.json(driver);
   } catch (error) {
-    console.error("Error Fetching Driver:", error);
     return NextResponse.json({ error: "Failed to fetch driver" }, { status: 500 });
   }
 }
 
 // PUT - Update a Driver
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: Request,
+  context: { params: { id: string } }
+): Promise<Response> {
   try {
-    const driver_id = parseInt(params.id);
-    const formData = await req.formData();
-    const updatedData: { [key: string]: string } = {};
+    const driver_id = parseInt(context.params.id);
+    const formData = await request.formData();
 
+    const updatedData: { [key: string]: string } = {};
     const fields = ["first_name", "last_name", "id_number", "phone_number", "email"];
     fields.forEach((field) => {
       const value = formData.get(field);
@@ -55,17 +57,17 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
     return NextResponse.json(updatedDriver);
   } catch (error) {
-    console.error("Error Updating Driver:", error);
     return NextResponse.json({ error: "Failed to update driver" }, { status: 500 });
   }
 }
 
 // DELETE - Remove a Driver
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: Request,
+  context: { params: { id: string } }
+): Promise<Response> {
   try {
-    const driver_id = parseInt(params.id);
-
-    console.log("Deleting Driver ID:", driver_id);
+    const driver_id = parseInt(context.params.id);
 
     await prisma.driver.delete({
       where: { driver_id },
@@ -73,7 +75,6 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
     return NextResponse.json({ message: "Driver deleted successfully" });
   } catch (error) {
-    console.error("Error Deleting Driver:", error);
     return NextResponse.json({ error: "Failed to delete driver" }, { status: 500 });
   }
 }
