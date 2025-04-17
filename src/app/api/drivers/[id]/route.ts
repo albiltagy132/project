@@ -19,7 +19,7 @@ export async function GET(
     }
 
     return NextResponse.json(driver);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch driver" }, { status: 500 });
   }
 }
@@ -56,8 +56,8 @@ export async function PUT(
     });
 
     return NextResponse.json(updatedDriver);
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to update driver" }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch driver" }, { status: 500 });
   }
 }
 
@@ -74,7 +74,7 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: "Driver deleted successfully" });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to delete driver" }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch driver" }, { status: 500 });
   }
 }
