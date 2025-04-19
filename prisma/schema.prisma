@@ -84,13 +84,14 @@ model Event {
   trip_id      Int
   event_time   DateTime
   event_type   EventType
-  sensor       SensorType //new field
+  sensor       SensorType
   image_proof  String
+  device_id    String?     
   created_at   DateTime   @default(now())
 
-  // Relationships
-  trip         Trip       @relation(fields: [trip_id], references: [trip_id])
+  trip   Trip @relation(fields: [trip_id], references: [trip_id])
 }
+
 
 
 //ENUMS
@@ -117,7 +118,7 @@ enum EventType {
 
 //Enum for Sensor Status
 enum SensorType {
-  Deviation
+  Turn
   Brake
   Null
 }

@@ -7,7 +7,6 @@ export async function GET(req: Request, context: { params: { id: string } }) {
     const { id } = context.params; //Ensure params is awaited
     const vehicle_id = parseInt(id);
 
-    console.log("Fetching Vehicle ID:", vehicle_id);
 
     const vehicle = await prisma.vehicle.findUnique({
       where: { vehicle_id },
@@ -30,7 +29,6 @@ export async function DELETE(req: Request, context: { params: { id: string } }) 
     const { id } = context.params; //Ensure params is awaited
     const vehicle_id = parseInt(id);
 
-    console.log("Deleting Vehicle ID:", vehicle_id);
 
     await prisma.vehicle.delete({
       where: { vehicle_id },
@@ -50,7 +48,6 @@ export async function PUT(req: Request, context: { params: { id: string } }) {
     const vehicle_id = parseInt(id);
     const data = await req.json();
 
-    console.log("Updating Vehicle ID:", vehicle_id, "Data:", data);
 
     const updatedVehicle = await prisma.vehicle.update({
       where: { vehicle_id },

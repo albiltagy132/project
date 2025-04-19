@@ -18,15 +18,14 @@ interface Vehicle {
 }
 
 interface Trip {
-    trip_id: number;
-    driver: Driver;
-    vehicle: Vehicle;
-    start_time: string;
-    end_time: string | null;
-    trip_status: "InProgress" | "Completed" | "Failed";
-    shift: "MORNING" | "NIGHT"; // ✅ add this line
-  }
-  
+  trip_id: number;
+  driver: Driver;
+  vehicle: Vehicle;
+  start_time: string;
+  end_time: string | null;
+  trip_status: "InProgress" | "Completed" | "Failed";
+  shift: "MORNING" | "NIGHT";
+}
 
 interface Event {
   event_id: number;
@@ -43,56 +42,35 @@ export default function DashboardPage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const today = new Date();
-  const todayStr = today.toISOString().split("T")[0];
-  const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
-
+  useEffect(() => {
     const fetchData = async () => {
-        try {
-            const tripRes = await fetch("/api/trips");
-            const text = await tripRes.text(); // <-- read raw text
-            console.log("RAW /api/trips RESPONSE:", text);
+      try {
+        const tripRes = await fetch("/api/trips");
+        const tripData: Trip[] = await tripRes.json();
 
-            if (!tripRes.ok) {
-            console.error("Trip API failed:", text);
-            return;
-            }
+        const eventRes = await fetch("/api/events");
+        const eventData: Event[] = await eventRes.json();
 
-            const tripData: Trip[] = JSON.parse(text); // safely parse only if it's JSON
-             
-          const eventRes = await fetch("/api/events");
-          const eventData: Event[] = await eventRes.json();
-    
-          setTrips(tripData);
-          setEvents(eventData);
-        } catch (err) {
-          console.error("Error loading dashboard data:", err);
-        }
-      };
-    
-      useEffect(() => {
-        fetchData();
-      }, []);
+        setTrips(tripData);
+        setEvents(eventData);
+      } catch (err) {
+        console.error("Error loading dashboard data:", err);
+      }
+    };
 
-  // Filter trips for today and by search
-  const filteredTrips = trips.filter((t) => {
-    const date = t.start_time.split("T")[0];
-    const matchToday = date === todayStr;
+    fetchData();
+  }, []);
 
-    const matchSearch =
-      t.driver.first_name.toLowerCase().includes(search.toLowerCase()) ||
-      t.driver.last_name.toLowerCase().includes(search.toLowerCase()) ||
-      t.driver.driver_id.toString().includes(search);
+  // Group trips by date
+  const groupedTrips = trips.reduce((acc: Record<string, Trip[]>, trip) => {
+    const date = trip.start_time.split("T")[0];
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(trip);
+    return acc;
+  }, {});
 
-    return matchToday && matchSearch;
-  });
-
-  const filteredEvents = events.filter((event) => {
-    const date = event.event_time.split("T")[0];
-    const afterStart = !startDate || date >= startDate;
-    const beforeEnd = !endDate || date <= endDate;
-    return afterStart && beforeEnd;
-  });
+  // Sort dates descending (newest first)
+  const sortedDates = Object.keys(groupedTrips).sort((a, b) => b.localeCompare(a));
 
   return (
     <div className="p-6">
@@ -121,31 +99,58 @@ export default function DashboardPage() {
         />
       </div>
 
+      {/* Manual create trips button */}
       <button
         className="bg-green-600 text-white px-4 py-2 rounded mb-6 hover:bg-green-700"
         onClick={async () => {
-            try {
+          try {
             const res = await fetch("/api/trips/create-from-assignments", {
-                method: "POST",
+              method: "POST",
             });
             const data = await res.json();
             alert(data.message || "Trips created.");
-            // Optional: refresh trips immediately
             window.location.reload();
-            } catch (error) {
+          } catch (error) {
             console.error("Error creating trips:", error);
             alert("Something went wrong while creating trips.");
-            }
+          }
         }}
-        >
+      >
         Create Today’s Trips
-        </button>
-      <DashboardBox
-        date={todayStr}
-        weekday={weekday}
-        trips={filteredTrips}
-        events={filteredEvents}
-      />
+      </button>
+
+      {/* Render one DashboardBox per date */}
+      {sortedDates.map((date) => {
+        const tripsForDate = groupedTrips[date];
+
+        // Filter by search input
+        const filteredTrips = tripsForDate.filter((t) =>
+          t.driver.first_name.toLowerCase().includes(search.toLowerCase()) ||
+          t.driver.last_name.toLowerCase().includes(search.toLowerCase()) ||
+          t.driver.driver_id.toString().includes(search)
+        );
+
+        // Filter events for this date and date range
+        const eventsForDate = events.filter((event) => {
+          const eventDate = event.event_time.split("T")[0];
+          const isSameDay = eventDate === date;
+          const afterStart = !startDate || eventDate >= startDate;
+          const beforeEnd = !endDate || eventDate <= endDate;
+          return isSameDay && afterStart && beforeEnd;
+        });
+
+        const weekday = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
+
+        return (
+          <DashboardBox
+            key={date}
+            date={date}
+            weekday={weekday}
+            trips={filteredTrips}
+            events={eventsForDate}
+          />
+        );
+      })}
     </div>
   );
 }

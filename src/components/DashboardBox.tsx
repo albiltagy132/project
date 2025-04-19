@@ -16,23 +16,26 @@ interface Vehicle {
 }
 
 interface Trip {
-    trip_id: number;
-    driver: Driver;
-    vehicle: Vehicle;
-    start_time: string;
-    end_time: string | null;
-    trip_status: "InProgress" | "Completed" | "Failed";
-    shift: "MORNING" | "NIGHT"; // ✅ add this line
-  }
-  
+  trip_id: number;
+  driver: Driver;
+  vehicle: Vehicle;
+  start_time: string;
+  end_time: string | null;
+  trip_status: "InProgress" | "Completed" | "Failed";
+  shift: "MORNING" | "NIGHT";
+}
 
 interface Event {
   event_id: number;
+  trip_id: number;
   event_time: string;
-  event_type: "Drowsy" | "Distracted";
-  device_id: string;
+  event_type: "Sleep" | "Yawn"; 
+  device_id: string; 
   image_proof: string;
+  sensor: "Brake" | "Deviation" | "Null"; 
 }
+
+
 
 interface DashboardBoxProps {
   date: string;
@@ -42,12 +45,11 @@ interface DashboardBoxProps {
 }
 
 export function DashboardBox({ date, weekday, trips, events }: DashboardBoxProps) {
-  // Categorize by time of day (Morning: 9-17, Night: 17-1)
   const morningTrips = trips.filter((t) => t.shift === "MORNING");
   const nightTrips = trips.filter((t) => t.shift === "NIGHT");
 
-  const getEventsForVehicle = (device_id: string) =>
-    events.filter((e) => e.device_id === device_id);
+  const getEventsForTrip = (trip_id: number) =>
+    events.filter((e) => e.trip_id === trip_id);
 
   return (
     <div className="border rounded-lg shadow-md p-4 bg-white">
@@ -55,11 +57,10 @@ export function DashboardBox({ date, weekday, trips, events }: DashboardBoxProps
         <h2 className="text-xl font-bold">
           {weekday} - {new Date(date).toLocaleDateString()}
         </h2>
-        <span className="text-sm text-gray-500">Daily Overview</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Morning */}
+        {/* Morning Shift */}
         <div>
           <h3 className="font-semibold text-gray-800 mb-2">Morning Shift</h3>
           {morningTrips.length === 0 ? (
@@ -74,13 +75,13 @@ export function DashboardBox({ date, weekday, trips, events }: DashboardBoxProps
                 vehicle_number={trip.vehicle.vehicle_number}
                 vehicle_model={trip.vehicle.model}
                 trip_status={trip.trip_status}
-                events={getEventsForVehicle(trip.vehicle.device_id)}
+                events={getEventsForTrip(trip.trip_id)} // ✅ now filtering properly
               />
             ))
           )}
         </div>
 
-        {/* Night */}
+        {/* Night Shift */}
         <div>
           <h3 className="font-semibold text-gray-800 mb-2">Night Shift</h3>
           {nightTrips.length === 0 ? (
@@ -95,7 +96,7 @@ export function DashboardBox({ date, weekday, trips, events }: DashboardBoxProps
                 vehicle_number={trip.vehicle.vehicle_number}
                 vehicle_model={trip.vehicle.model}
                 trip_status={trip.trip_status}
-                events={getEventsForVehicle(trip.vehicle.device_id)}
+                events={getEventsForTrip(trip.trip_id)} // ✅ now filtering properly
               />
             ))
           )}

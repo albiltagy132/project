@@ -5,7 +5,6 @@ import prisma from "@/lib/prisma";
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    console.log("Received Data:", data);
 
     if (!data.vehicle_number || !data.device_id || !data.model || !data.make || !data.year || !data.status) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -18,7 +17,6 @@ export async function POST(req: Request) {
     };
 
     const newVehicle = await prisma.vehicle.create({ data: formattedData });
-    console.log("Vehicle Created:", newVehicle);
 
     return NextResponse.json(newVehicle, { status: 201 });
   } catch (error) {
@@ -33,7 +31,6 @@ export async function POST(req: Request) {
 export async function GET() {
   try {
     const vehicles = await prisma.vehicle.findMany();
-    console.log("Fetched Vehicles:", vehicles); //Log fetched data
     return NextResponse.json(vehicles);
   } catch (error) {
     console.error("Error Fetching Vehicles:", error);

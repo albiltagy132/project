@@ -1,13 +1,13 @@
+// src/app/api/trips/create-from-assignments/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { WeekDay } from "@prisma/client"; // Make sure you have this enum in your schema
+import { WeekDay } from "@prisma/client";
 
 export async function POST() {
   try {
     const today = new Date();
     const weekday = today.toLocaleDateString("en-US", { weekday: "long" }) as WeekDay;
 
-    // Get today's assignments
     const assignments = await prisma.assignment.findMany({
       where: { weekday },
     });
@@ -19,27 +19,47 @@ export async function POST() {
       );
     }
 
-    // Loop through and create trips
+    let createdCount = 0;
+
     for (const assignment of assignments) {
+      // ✅ Check if a trip already exists for today, driver, vehicle, shift
+      const existingTrip = await prisma.trip.findFirst({
+        where: {
+          driver_id: assignment.driver_id,
+          vehicle_id: assignment.vehicle_id,
+          shift: assignment.shift,
+          start_time: {
+            gte: new Date(today.toDateString()), // Midnight today
+            lt: new Date(today.toDateString() + "T23:59:59"), // End of day
+          },
+        },
+      });
+
+      if (existingTrip) {
+        continue; // 🚫 Skip if trip already exists
+      }
+
+      // ✅ Create trip
       await prisma.trip.create({
         data: {
           driver_id: assignment.driver_id,
           vehicle_id: assignment.vehicle_id,
           start_time: today,
           trip_status: "InProgress",
-          shift: assignment.shift, // ✅ this must be set!
+          shift: assignment.shift,
         },
       });
-      
 
-      // Remove the assignment after creating trip
+      // ✅ Remove the assignment after creating trip
       await prisma.assignment.delete({
         where: { assignment_id: assignment.assignment_id },
       });
+
+      createdCount++;
     }
 
     return NextResponse.json(
-      { message: `${assignments.length} trip(s) created for ${weekday}.` },
+      { message: `${createdCount} trip(s) created for ${weekday}.` },
       { status: 201 }
     );
   } catch (error) {
