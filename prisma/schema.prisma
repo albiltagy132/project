@@ -80,14 +80,15 @@ model Trip {
 
 //Events Table 
 model Event {
-  event_id     Int        @id @default(autoincrement())
+  event_id     Int           @id @default(autoincrement())
   trip_id      Int
   event_time   DateTime
   event_type   EventType
   sensor       SensorType
   image_proof  String
-  device_id    String?     
-  created_at   DateTime   @default(now())
+  device_id    String
+  event_severity EventSeverity
+  created_at   DateTime      @default(now())
 
   trip   Trip @relation(fields: [trip_id], references: [trip_id])
 }
@@ -116,7 +117,12 @@ enum EventType {
   Yawn
 }
 
-//Enum for Sensor Status
+enum EventSeverity {
+  Low
+  Medium
+  High
+}
+
 enum SensorType {
   Turn
   Brake

@@ -1,7 +1,21 @@
-// src/app/api/events/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Prisma, $Enums } from "@prisma/client";
+
+// 🟢 Helper to determine event severity
+function determineSeverity(
+  event_type: $Enums.EventType,
+  sensor: $Enums.SensorType
+): $Enums.EventSeverity {
+  const isSleep = event_type === "Sleep";
+  const isYawn = event_type === "Yawn";
+  const isBrakeOrTurn = sensor === "Brake" || sensor === "Turn";
+
+  if (isSleep && isBrakeOrTurn) return "High";
+  if (isSleep) return "Medium";
+  if (isYawn && isBrakeOrTurn) return "Low";
+  return "Low"; // Default fallback
+}
 
 // 🟢 GET - Return all events with related trip/driver/vehicle
 export async function GET() {
@@ -76,6 +90,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Trip not found for this timestamp" }, { status: 404 });
     }
 
+    // 🔵 Compute severity
+    const severity = determineSeverity(event_type, sensor);
+
     // 3. Save the event
     const newEvent = await prisma.event.create({
       data: {
@@ -85,6 +102,7 @@ export async function POST(req: Request) {
         sensor: sensor as $Enums.SensorType,
         image_proof,
         device_id,
+        event_severity: severity,
       },
     });
 

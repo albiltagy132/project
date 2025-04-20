@@ -9,6 +9,7 @@ interface Event {
   device_id: string; // ✅ make sure this is declared
   sensor: "Brake" | "Deviation" | "Null";
   image_proof: string;
+  event_severity: "Low" | "Medium" | "High";
 }
 
 interface TripCardProps {
@@ -101,6 +102,20 @@ export function TripCard({
                   </p>
                   <p className="text-sm text-gray-600">
                     <strong>Sensor:</strong> {event.sensor}
+                  </p>
+                  <p className="text-sm mt-1">
+                    <strong>Severity:</strong>{" "}
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      event.event_severity === "High"
+                        ? "bg-red-100 text-red-800"
+                        : event.event_severity === "Medium"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : event.event_severity === "Low"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-100 text-gray-600"
+                    }`}>
+                      {event.event_severity ?? "N/A"}
+                    </span>
                   </p>
                 </div>
               </div>
