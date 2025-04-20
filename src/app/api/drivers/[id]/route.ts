@@ -1,68 +1,77 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import fs from "fs/promises";
+import path from "path";
 
-// GET - Fetch a single vehicle
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+// GET - Fetch a single driver
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
-    const vehicle = await prisma.vehicle.findUnique({
-      where: { vehicle_id: parseInt(params.id) }, // Parse here if DB expects number
+    const driver = await prisma.driver.findUnique({
+      where: { driver_id: parseInt(params.id) },
     });
 
-    if (!vehicle) {
-      return NextResponse.json({ error: "Vehicle not found" }, { status: 404 });
+    if (!driver) {
+      return NextResponse.json({ error: "Driver not found" }, { status: 404 });
     }
 
-    return NextResponse.json(vehicle);
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch vehicle" },
-      { status: 500 }
-    );
+    return NextResponse.json(driver);
+  } catch (error) {
+    console.error("❌ GET Error:", error);
+    return NextResponse.json({ error: "Failed to fetch driver" }, { status: 500 });
   }
 }
 
-// PUT - Update a vehicle
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+// PUT - Update a driver
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
-    const data = await req.json();
+    const driver_id = parseInt(params.id);
+    const formData = await req.formData();
 
-    const updated = await prisma.vehicle.update({
-      where: { vehicle_id: parseInt(params.id) }, // Parse here if DB expects number
-      data,
+    const updatedData: Record<string, string> = {
+      first_name: formData.get("first_name") as string,
+      last_name: formData.get("last_name") as string,
+      id_number: formData.get("id_number") as string,
+      phone_number: formData.get("phone_number") as string,
+      email: formData.get("email") as string,
+    };
+
+    const image = formData.get("image") as File;
+
+    if (image && image.size > 0) {
+      const uploadDir = path.join(process.cwd(), "public/uploads");
+      await fs.mkdir(uploadDir, { recursive: true });
+
+      const imagePath = `/uploads/${Date.now()}-${image.name}`;
+      const buffer = Buffer.from(await image.arrayBuffer());
+      await fs.writeFile(path.join(process.cwd(), "public", imagePath), buffer);
+
+      updatedData.image_url = imagePath;
+    }
+
+    const updatedDriver = await prisma.driver.update({
+      where: { driver_id },
+      data: updatedData,
     });
 
-    return NextResponse.json(updated);
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to update vehicle" },
-      { status: 500 }
-    );
+    return NextResponse.json(updatedDriver);
+  } catch (error) {
+    console.error("❌ PUT Error:", error);
+    return NextResponse.json({ error: "Failed to update driver" }, { status: 500 });
   }
 }
 
-// DELETE - Delete a vehicle
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+// DELETE - Delete a driver
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
-    await prisma.vehicle.delete({
-      where: { vehicle_id: parseInt(params.id) }, // Parse here if DB expects number
+    const driver_id = parseInt(params.id);
+
+    await prisma.driver.delete({
+      where: { driver_id },
     });
 
-    return NextResponse.json({ message: "Vehicle deleted successfully" });
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to delete vehicle" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Driver deleted successfully" });
+  } catch (error) {
+    console.error("❌ DELETE Error:", error);
+    return NextResponse.json({ error: "Failed to delete driver" }, { status: 500 });
   }
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */

@@ -8,6 +8,12 @@ export async function POST() {
     const today = new Date();
     const weekday = today.toLocaleDateString("en-US", { weekday: "long" }) as WeekDay;
 
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
     const assignments = await prisma.assignment.findMany({
       where: { weekday },
     });
@@ -29,8 +35,8 @@ export async function POST() {
           vehicle_id: assignment.vehicle_id,
           shift: assignment.shift,
           start_time: {
-            gte: new Date(today.toDateString()), // Midnight today
-            lt: new Date(today.toDateString() + "T23:59:59"), // End of day
+            gte: startOfDay,
+            lt: endOfDay,
           },
         },
       });
