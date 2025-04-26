@@ -7,7 +7,7 @@ interface Event {
   event_time: string;
   event_type: "Sleep" | "Yawn";
   device_id: string; // ✅ make sure this is declared
-  sensor: "Brake" | "Deviation" | "Null";
+  sensor: "Brake" | "Turn" | "Null";
   image_proof: string;
   event_severity: "Low" | "Medium" | "High";
 }

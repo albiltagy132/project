@@ -29,18 +29,20 @@ interface Trip {
 
 interface Event {
   event_id: number;
+  trip_id: number;
   event_time: string;
-  event_type: "Drowsy" | "Distracted";
+  event_type: "Sleep" | "Yawn";
   device_id: string;
+  sensor: "Brake" | "Turn" | "Null";
   image_proof: string;
+  event_severity: "Low" | "Medium" | "High";
 }
 
 export default function DashboardPage() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [search, setSearch] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,7 +71,6 @@ export default function DashboardPage() {
     return acc;
   }, {});
 
-  // Sort dates descending (newest first)
   const sortedDates = Object.keys(groupedTrips).sort((a, b) => b.localeCompare(a));
 
   return (
@@ -85,28 +86,31 @@ export default function DashboardPage() {
           onChange={(e) => setSearch(e.target.value)}
           className="border p-2 rounded w-full md:w-1/3"
         />
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="border p-2 rounded w-full md:w-1/4"
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="border p-2 rounded w-full md:w-1/4"
-        />
+
+        <div className="flex flex-col">
+          <label className="text-sm text-gray-600 mb-1">Select Date</label>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="border p-2 rounded"
+          />
+        </div>
+
+        <button
+          onClick={() => setSelectedDate("")}
+          className="bg-gray-500 text-white px-4 py-2 rounded mt-6 md:mt-0"
+        >
+          Reset Date
+        </button>
       </div>
 
-      {/* Manual create trips button */}
+      {/* Create Trips Button */}
       <button
         className="bg-green-600 text-white px-4 py-2 rounded mb-6 hover:bg-green-700"
         onClick={async () => {
           try {
-            const res = await fetch("/api/trips/create-from-assignments", {
-              method: "POST",
-            });
+            const res = await fetch("/api/trips/create-from-assignments", { method: "POST" });
             const data = await res.json();
             alert(data.message || "Trips created.");
             window.location.reload();
@@ -119,38 +123,38 @@ export default function DashboardPage() {
         Create Today’s Trips
       </button>
 
-      {/* Render one DashboardBox per date */}
-      {sortedDates.map((date) => {
-        const tripsForDate = groupedTrips[date];
+      {/* Dashboard Boxes */}
+      {sortedDates
+        .filter((date) => {
+          if (!selectedDate) return true; // No date picked, show all
+          return date === selectedDate;   // Only show selected date
+        })
+        .map((date) => {
+          const tripsForDate = groupedTrips[date];
 
-        // Filter by search input
-        const filteredTrips = tripsForDate.filter((t) =>
-          t.driver.first_name.toLowerCase().includes(search.toLowerCase()) ||
-          t.driver.last_name.toLowerCase().includes(search.toLowerCase()) ||
-          t.driver.driver_id.toString().includes(search)
-        );
+          const filteredTrips = tripsForDate.filter((t) =>
+            t.driver.first_name.toLowerCase().includes(search.toLowerCase()) ||
+            t.driver.last_name.toLowerCase().includes(search.toLowerCase()) ||
+            t.driver.driver_id.toString().includes(search)
+          );
 
-        // Filter events for this date and date range
-        const eventsForDate = events.filter((event) => {
-          const eventDate = event.event_time.split("T")[0];
-          const isSameDay = eventDate === date;
-          const afterStart = !startDate || eventDate >= startDate;
-          const beforeEnd = !endDate || eventDate <= endDate;
-          return isSameDay && afterStart && beforeEnd;
-        });
+          const eventsForThisDate = events.filter((event) => {
+            const eventDate = event.event_time.split("T")[0];
+            return eventDate === date;
+          });
 
-        const weekday = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
+          const weekday = new Date(date).toLocaleDateString("en-US", { weekday: "long" });
 
-        return (
-          <DashboardBox
-            key={date}
-            date={date}
-            weekday={weekday}
-            trips={filteredTrips}
-            events={eventsForDate}
-          />
-        );
-      })}
+          return (
+            <DashboardBox
+              key={date}
+              date={date}
+              weekday={weekday}
+              trips={filteredTrips}
+              events={eventsForThisDate}
+            />
+          );
+        })}
     </div>
   );
 }

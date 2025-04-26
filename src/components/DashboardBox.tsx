@@ -27,12 +27,13 @@ interface Trip {
 
 interface Event {
   event_id: number;
-  trip_id: number;
+  trip_id: number; // ✅ Needed by DashboardBox
   event_time: string;
-  event_type: "Sleep" | "Yawn"; 
-  device_id: string; 
+  event_type: "Sleep" | "Yawn";
+  device_id: string;
+  sensor: "Brake" | "Turn" | "Null";
   image_proof: string;
-  sensor: "Brake" | "Deviation" | "Null"; 
+  event_severity: "Low" | "Medium" | "High";
 }
 
 
