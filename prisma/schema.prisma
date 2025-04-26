@@ -93,6 +93,11 @@ model Event {
   trip   Trip @relation(fields: [trip_id], references: [trip_id])
 }
 
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+}
 
 
 //ENUMS
