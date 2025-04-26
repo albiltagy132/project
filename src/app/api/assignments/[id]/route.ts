@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// src\app\api\assignments\[id]\route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -16,4 +16,3 @@ export async function DELETE(req: Request, context: any) {
     return NextResponse.json({ error: "Failed to unassign driver" }, { status: 500 });
   }
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */

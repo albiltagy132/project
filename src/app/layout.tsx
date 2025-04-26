@@ -1,3 +1,4 @@
+// src\app\layout.tsx
 import Layout from "../components/Layout";
 import "../app/globals.css";
 
