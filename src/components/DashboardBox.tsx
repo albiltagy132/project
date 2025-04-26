@@ -1,3 +1,4 @@
+// src\components\DashboardBox.tsx
 "use client";
 import { TripCard } from "./TripCard";
 
