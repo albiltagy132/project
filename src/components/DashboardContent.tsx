@@ -2,51 +2,51 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { DashboardBox } from "@/components/DashboardBox";
 
 interface Driver {
-    driver_id: number;
-    first_name: string;
-    last_name: string;
-    image_url: string;
-  }
-  
-  interface Vehicle {
-    vehicle_id: number;
-    vehicle_number: string;
-    model: string;
-    device_id: string;
-  }
-  
-  interface Trip {
-    trip_id: number;
-    driver: Driver;
-    vehicle: Vehicle;
-    start_time: string;
-    end_time: string | null;
-    trip_status: "InProgress" | "Completed" | "Failed";
-    shift: "MORNING" | "NIGHT";
-  }
-  
-  interface Event {
-    event_id: number;
-    trip_id: number;
-    event_time: string;
-    event_type: "Sleep" | "Yawn";
-    device_id: string;
-    sensor: "Brake" | "Turn" | "Null";
-    image_proof: string;
-    event_severity: "Low" | "Medium" | "High";
-  }
+  driver_id: number;
+  first_name: string;
+  last_name: string;
+  image_url: string;
+}
+
+interface Vehicle {
+  vehicle_id: number;
+  vehicle_number: string;
+  model: string;
+  device_id: string;
+}
+
+interface Trip {
+  trip_id: number;
+  driver: Driver;
+  vehicle: Vehicle;
+  start_time: string;
+  end_time: string | null;
+  trip_status: "InProgress" | "Completed" | "Failed";
+  shift: "MORNING" | "NIGHT";
+}
+
+interface Event {
+  event_id: number;
+  trip_id: number;
+  event_time: string;
+  event_type: "Sleep" | "Yawn";
+  device_id: string;
+  sensor: "Brake" | "Turn" | "Null";
+  image_proof: string;
+  event_severity: "Low" | "Medium" | "High";
+}
 
 export function DashboardContent() {
-  const router = useRouter();
   const [trips, setTrips] = useState<Trip[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [search, setSearch] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [page, setPage] = useState(1);
 
+  const itemsPerPage = 7; // Show 7 days per page
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +76,8 @@ export function DashboardContent() {
   }, {});
 
   const sortedDates = Object.keys(groupedTrips).sort((a, b) => b.localeCompare(a));
+
+  const paginatedDates = sortedDates.slice(0, page * itemsPerPage);
 
   return (
     <div className="p-6">
@@ -127,8 +129,20 @@ export function DashboardContent() {
         Create Today’s Trips
       </button>
 
+      {/* Load More Button at the top */}
+      {sortedDates.length > paginatedDates.length && (
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={() => setPage(page + 1)}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Load 7 More Days
+          </button>
+        </div>
+      )}
+
       {/* Dashboard Boxes */}
-      {sortedDates
+      {paginatedDates
         .filter((date) => {
           if (!selectedDate) return true;
           return date === selectedDate;
