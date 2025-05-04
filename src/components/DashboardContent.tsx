@@ -1,4 +1,3 @@
-// src/components/DashboardContent.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -49,6 +48,8 @@ export function DashboardContent() {
   const itemsPerPage = 7; // Show 7 days per page
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       try {
         const tripRes = await fetch("/api/trips");
@@ -57,14 +58,23 @@ export function DashboardContent() {
         const eventRes = await fetch("/api/events");
         const eventData: Event[] = await eventRes.json();
 
-        setTrips(tripData);
-        setEvents(eventData);
+        if (isMounted) {
+          setTrips(tripData);
+          setEvents(eventData);
+        }
       } catch (err) {
         console.error("Error loading dashboard data:", err);
       }
     };
 
-    fetchData();
+    fetchData(); // Initial load
+
+    const interval = setInterval(fetchData, 10000); // Refresh every 10s
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   // Group trips by date

@@ -1,4 +1,4 @@
-/* src\app\globals.css */
+/* src/app/globals.css */
 @import "tailwindcss";
 
 @tailwind base;
@@ -27,4 +27,63 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: 'Inter', var(--font-sans), sans-serif;
+}
+
+
+.leaderboard {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.leaderboard .table {
+  width: 100%;
+  border: 1px solid #EEEEEE;
+  border-collapse: collapse;
+}
+
+.leaderboard .table-header,
+.leaderboard .table-row {
+  display: flex;
+  width: 100%;
+  padding: 12px 0;
+}
+
+.leaderboard .table-header {
+  background: #000;
+  color: white;
+  text-transform: uppercase;
+}
+
+.leaderboard .table-row:nth-of-type(odd) {
+  background: #EEEEEE;
+}
+
+.leaderboard .table-data,
+.leaderboard .header__item {
+  flex: 1 1 20%;
+  text-align: center;
+}
+
+.leaderboard .filter__link {
+  color: white;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  padding: 0 24px;
+}
+
+.leaderboard .filter__link::after {
+  content: '';
+  position: absolute;
+  right: -12px;
+  font-size: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.leaderboard .filter__link.desc::after {
+  content: '(desc)';
+}
+
+.leaderboard .filter__link.asc::after {
+  content: '(asc)';
 }
