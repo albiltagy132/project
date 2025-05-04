@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev-device": "next dev --hostname=192.168.3.237 --turbo",
+    "dev": "cross-env next dev",
+    "dev-device": "cross-env HOST=0.0.0.0 PORT=3000 next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
