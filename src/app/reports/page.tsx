@@ -5,8 +5,8 @@ import ShiftPieChart from "@/components/ShiftPieChart";
 import DriverSelector from "@/components/DriverSelector";
 import TimeRangeSelector from "@/components/TimeRangeSelector";
 import DriverLeaderboard from "@/components/DriverLeaderboard";
-import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export default function ReportsPage() {
   const [events, setEvents] = useState([]);
@@ -26,9 +26,23 @@ export default function ReportsPage() {
     const input = document.getElementById("report-section");
     if (!input) return;
 
+    // Patch unsupported oklch styles
+    const elements = input.querySelectorAll("*");
+    elements.forEach((el) => {
+      const style = window.getComputedStyle(el);
+      if (style.backgroundColor.includes("oklch")) {
+        (el as HTMLElement).style.backgroundColor = "#ffffff";
+      }
+      if (style.color.includes("oklch")) {
+        (el as HTMLElement).style.color = "#000000";
+      }
+    });
+
+    // Generate canvas
     const canvas = await html2canvas(input, { scale: 2 });
     const imgData = canvas.toDataURL("image/png");
 
+    // Create PDF
     const pdf = new jsPDF("p", "mm", "a4");
     const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -42,7 +56,7 @@ export default function ReportsPage() {
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">Driver Performance Report</h1>
 
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="flex flex-wrap gap-4 mb-6 items-center">
         <DriverSelector onChange={setDriverId} />
         <TimeRangeSelector onChange={setRange} />
         <button
