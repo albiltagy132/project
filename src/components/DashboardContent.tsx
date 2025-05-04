@@ -1,4 +1,3 @@
-// src/components/DashboardContent.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,39 +5,39 @@ import { useRouter } from "next/navigation";
 import { DashboardBox } from "@/components/DashboardBox";
 
 interface Driver {
-    driver_id: number;
-    first_name: string;
-    last_name: string;
-    image_url: string;
-  }
-  
-  interface Vehicle {
-    vehicle_id: number;
-    vehicle_number: string;
-    model: string;
-    device_id: string;
-  }
-  
-  interface Trip {
-    trip_id: number;
-    driver: Driver;
-    vehicle: Vehicle;
-    start_time: string;
-    end_time: string | null;
-    trip_status: "InProgress" | "Completed" | "Failed";
-    shift: "MORNING" | "NIGHT";
-  }
-  
-  interface Event {
-    event_id: number;
-    trip_id: number;
-    event_time: string;
-    event_type: "Sleep" | "Yawn";
-    device_id: string;
-    sensor: "Brake" | "Turn" | "Null";
-    image_proof: string;
-    event_severity: "Low" | "Medium" | "High";
-  }
+  driver_id: number;
+  first_name: string;
+  last_name: string;
+  image_url: string;
+}
+
+interface Vehicle {
+  vehicle_id: number;
+  vehicle_number: string;
+  model: string;
+  device_id: string;
+}
+
+interface Trip {
+  trip_id: number;
+  driver: Driver;
+  vehicle: Vehicle;
+  start_time: string;
+  end_time: string | null;
+  trip_status: "InProgress" | "Completed" | "Failed";
+  shift: "MORNING" | "NIGHT";
+}
+
+interface Event {
+  event_id: number;
+  trip_id: number;
+  event_time: string;
+  event_type: "Sleep" | "Yawn";
+  device_id: string;
+  sensor: "Brake" | "Turn" | "Null";
+  image_proof: string;
+  event_severity: "Low" | "Medium" | "High";
+}
 
 export function DashboardContent() {
   const router = useRouter();
@@ -47,8 +46,9 @@ export function DashboardContent() {
   const [search, setSearch] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
 
-
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       try {
         const tripRes = await fetch("/api/trips");
@@ -57,14 +57,23 @@ export function DashboardContent() {
         const eventRes = await fetch("/api/events");
         const eventData: Event[] = await eventRes.json();
 
-        setTrips(tripData);
-        setEvents(eventData);
+        if (isMounted) {
+          setTrips(tripData);
+          setEvents(eventData);
+        }
       } catch (err) {
         console.error("Error loading dashboard data:", err);
       }
     };
 
-    fetchData();
+    fetchData(); // Initial load
+
+    const interval = setInterval(fetchData, 10000); // Refresh every 10s
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   // Group trips by date
@@ -129,10 +138,7 @@ export function DashboardContent() {
 
       {/* Dashboard Boxes */}
       {sortedDates
-        .filter((date) => {
-          if (!selectedDate) return true;
-          return date === selectedDate;
-        })
+        .filter((date) => !selectedDate || date === selectedDate)
         .map((date) => {
           const tripsForDate = groupedTrips[date];
 
