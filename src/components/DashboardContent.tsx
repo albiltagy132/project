@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { DashboardBox } from "@/components/DashboardBox";
 
 interface Driver {
@@ -40,11 +39,13 @@ interface Event {
 }
 
 export function DashboardContent() {
-  const router = useRouter();
   const [trips, setTrips] = useState<Trip[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [search, setSearch] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [page, setPage] = useState(1);
+
+  const itemsPerPage = 7; // Show 7 days per page
 
   useEffect(() => {
     let isMounted = true;
@@ -85,6 +86,8 @@ export function DashboardContent() {
   }, {});
 
   const sortedDates = Object.keys(groupedTrips).sort((a, b) => b.localeCompare(a));
+
+  const paginatedDates = sortedDates.slice(0, page * itemsPerPage);
 
   return (
     <div className="p-6">
@@ -136,9 +139,24 @@ export function DashboardContent() {
         Create Today’s Trips
       </button>
 
+      {/* Load More Button at the top */}
+      {sortedDates.length > paginatedDates.length && (
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={() => setPage(page + 1)}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Load 7 More Days
+          </button>
+        </div>
+      )}
+
       {/* Dashboard Boxes */}
-      {sortedDates
-        .filter((date) => !selectedDate || date === selectedDate)
+      {paginatedDates
+        .filter((date) => {
+          if (!selectedDate) return true;
+          return date === selectedDate;
+        })
         .map((date) => {
           const tripsForDate = groupedTrips[date];
 
