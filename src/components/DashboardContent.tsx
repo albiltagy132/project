@@ -49,15 +49,15 @@ export function DashboardContent() {
 
   useEffect(() => {
     let isMounted = true;
-
+  
     const fetchData = async () => {
       try {
         const tripRes = await fetch("/api/trips");
         const tripData: Trip[] = await tripRes.json();
-
+  
         const eventRes = await fetch("/api/events");
         const eventData: Event[] = await eventRes.json();
-
+  
         if (isMounted) {
           setTrips(tripData);
           setEvents(eventData);
@@ -66,16 +66,21 @@ export function DashboardContent() {
         console.error("Error loading dashboard data:", err);
       }
     };
-
-    fetchData(); // Initial load
-
-    const interval = setInterval(fetchData, 10000); // Refresh every 10s
-
+  
+    fetchData(); // initial fetch
+  
+    const interval = setInterval(() => {
+      console.log("🔄 Fetching dashboard data..."); 
+      fetchData();
+    }, 10000); // every 10 seconds
+  
     return () => {
       isMounted = false;
       clearInterval(interval);
     };
   }, []);
+  
+  
 
   // Group trips by date
   const groupedTrips = trips.reduce((acc: Record<string, Trip[]>, trip) => {

@@ -1,6 +1,5 @@
-// middleware.ts
 import { NextResponse } from "next/server";
-import { NextRequest } from "next/server"; // 🛠️ IMPORTANT: NextRequest not Request
+import { NextRequest } from "next/server";
 import { verify } from "./src/lib/auth";
 
 export function middleware(req: NextRequest) {
@@ -14,7 +13,6 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// Only protect these routes:
 export const config = {
-  matcher: ["/((?!login|_next|favicon.ico|public).*)"], // allow login and static files
+  matcher: ["/((?!api|login|_next|favicon.ico|public).*)"], // exclude public & allowed routes
 };
