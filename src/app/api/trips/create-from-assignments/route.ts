@@ -1,7 +1,6 @@
-// src/app/api/trips/create-from-assignments/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { WeekDay } from "@prisma/client";
+import { WeekDay, TripStatus } from "@prisma/client";
 
 export async function POST() {
   try {
@@ -16,6 +15,9 @@ export async function POST() {
 
     const assignments = await prisma.assignment.findMany({
       where: { weekday },
+      orderBy: {
+        assigned_at: "asc", // ensure consistent ordering
+      },
     });
 
     if (!assignments.length) {
@@ -27,8 +29,9 @@ export async function POST() {
 
     let createdCount = 0;
 
+    const vehicleMap = new Map<number, boolean>(); // vehicle_id -> hasInProgressTrip
+
     for (const assignment of assignments) {
-      // ✅ Check if a trip already exists for today, driver, vehicle, shift
       const existingTrip = await prisma.trip.findFirst({
         where: {
           driver_id: assignment.driver_id,
@@ -36,17 +39,16 @@ export async function POST() {
           shift: assignment.shift,
           start_time: {
             gte: startOfDay,
-            lt: endOfDay,
+            lte: endOfDay,
           },
         },
       });
-
-      if (existingTrip) {
-        continue; // 🚫 Skip if trip already exists
-      }
-
-      // ✅ Create trip
-      await prisma.trip.create({
+    
+      if (existingTrip) continue;
+    
+      const alreadyStarted = vehicleMap.get(assignment.vehicle_id) || false;
+    
+      const trip = await prisma.trip.create({
         data: {
           driver_id: assignment.driver_id,
           vehicle_id: assignment.vehicle_id,
@@ -55,15 +57,20 @@ export async function POST() {
           shift: assignment.shift,
         },
       });
-
-      // ✅ Remove the assignment after creating trip
+    
+      // ✅ Delete the assignment once the trip is created
       await prisma.assignment.delete({
         where: { assignment_id: assignment.assignment_id },
       });
-
+    
+      // ✅ Track vehicle status
+      if (!alreadyStarted) {
+        vehicleMap.set(assignment.vehicle_id, true);
+      }
+    
       createdCount++;
     }
-
+    
     return NextResponse.json(
       { message: `${createdCount} trip(s) created for ${weekday}.` },
       { status: 201 }

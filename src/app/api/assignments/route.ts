@@ -8,20 +8,20 @@ export async function POST(req: Request) {
     const { driver_id, vehicle_id, shift, weekday } = await req.json();
 
     // Check if the driver is already assigned on the same day and shift
-    const driverConflict = await prisma.assignment.findFirst({
-      where: {
-        driver_id,
-        shift,
-        weekday,
-      },
-    });
+    // const driverConflict = await prisma.assignment.findFirst({
+    //   where: {
+    //     driver_id,
+    //     shift,
+    //     weekday,
+    //   },
+    // });
 
-    if (driverConflict) {
-      return NextResponse.json(
-        { error: "This driver already has an assignment on the selected day and shift." },
-        { status: 400 }
-      );
-    }
+    // if (driverConflict) {
+    //   return NextResponse.json(
+    //     { error: "This driver already has an assignment on the selected day and shift." },
+    //     { status: 400 }
+    //   );
+    // }
 
     // Check if the vehicle is already assigned on the same day and shift
     const vehicleConflict = await prisma.assignment.findFirst({

@@ -80,6 +80,7 @@ export async function POST(req: Request) {
           gte: startOfDay,
           lte: endOfDay,
         },
+        trip_status: "InProgress",
       },
       include: {
         vehicle: true,
@@ -107,18 +108,25 @@ export async function POST(req: Request) {
       },
     });
 
-    // 4. Mark trip as completed if still in progress
-    if (trip.trip_status === "InProgress") {
-      await prisma.trip.update({
+    // 4. Delay trip completion to gather multiple events
+    setTimeout(async () => {
+      const stillInProgress = await prisma.trip.findUnique({
         where: { trip_id: trip.trip_id },
-        data: {
-          trip_status: "Completed",
-          end_time: eventDate,
-        },
       });
-    }
 
-    console.log("✅ Event saved and trip updated.");
+      if (stillInProgress && stillInProgress.trip_status === "InProgress") {
+        await prisma.trip.update({
+          where: { trip_id: trip.trip_id },
+          data: {
+            trip_status: "Completed",
+            end_time: new Date(),
+          },
+        });
+        console.log("✅ Trip completed after delay.");
+      }
+    }, 3000); // Delay 3 seconds before marking trip complete
+
+    console.log("✅ Event saved.");
     return NextResponse.json(newEvent, { status: 201 });
 
   } catch (error) {
