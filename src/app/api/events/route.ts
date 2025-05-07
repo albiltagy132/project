@@ -51,7 +51,7 @@ export async function POST(req: Request) {
 
   try {
     const { device_id, timestamp, event_type, image_proof, sensor } = await req.json();
-    console.log("📩 Event received:", { device_id, timestamp, event_type, sensor });
+    console.log("📩 Event received:");
 
     const eventDate = new Date(timestamp);
     const hour = eventDate.getHours();
